@@ -3,12 +3,20 @@
 PASSWORD="48BYbsEStd"
 
 # tasks
-while read POLICY TASK REPO; do
-    echo ""
-    echo ">>> $POLICY [$REPO//$TASK] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    razor delete-policy --name "$POLICY"  &> /dev/null
-    razor create-policy --name "$POLICY" --repo $REPO --task $TASK --broker puppet-pc1 \
-                        --enabled --hostname "host${id}.ncbr.muni.cz" --root-password "$PASSWORD" --tag "$POLICY"
-done < tasks
+cat tasks | sed -e 's/[[:blank:]][[:blank:]]*#.*//' | while read POLICY TASK REPO REST; do
+    (
+    if razor tags "$POLICY" &> /dev/null; then
+        echo ""
+        echo ">>> $POLICY [$REPO//$TASK] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+        razor delete-policy --name "$POLICY"  &> /dev/null
+        razor create-policy --name "$POLICY" --repo $REPO --task $TASK --broker puppet-pc1 \
+                            --enabled --hostname "host${id}.ncbr.muni.cz" --root-password "$PASSWORD" --tag "$POLICY"
+    else
+        echo ""
+        echo ">>> $POLICY tag is not defined ...."
+        razor delete-policy --name "$POLICY"  &> /dev/null
+    fi
+    ) < /dev/null
+done
 
 
