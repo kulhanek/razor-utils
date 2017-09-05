@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# for each  node
+cat nodes | sed -e 's/[[:blank:]][[:blank:]]*#.*//' | while read NODE MAC TAG REST; do
+    if [[ (-z "$NODE") || (-z "$MAC" ) ]]; then continue; fi
+    echo ""
+    echo ">>>> $NODE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    SN=`echo $NODE | tr '.' ' ' | awk '{ print $1; }'`
+#    razor delete-tag $SN
+    razor create-tag --name $SN --rule "[ \"has_macaddress\", \"$MAC\" ]"
+done
+
+# tasks
+TAGS="`cat nodes | sed -e 's/[[:blank:]][[:blank:]]*#.*//' | awk '{ if( $3 != "" ) print $3; }' | sort -u`"
+
+for TAG in $TAGS; do
+    echo ""
+    echo ">>>> TAG: $TAG >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    GLOBAL="[ \"has_macaddress\""
+    while read NODE MAC TMP; do
+        GLOBAL="${GLOBAL}, \"$MAC\""
+    done < <( cat nodes | sed -e 's/[[:blank:]][[:blank:]]*#.*//' | awk "{ if( \$3 == \"$TAG\" ) print \$0;}" )
+    GLOBAL="${GLOBAL}]"
+    razor delete-tag "$TAG" --force true
+    razor create-tag --name "$TAG" --rule "$GLOBAL"
+done
+
+

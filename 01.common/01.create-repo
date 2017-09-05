@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# NOTE: iso must be readable by the razor user
+# we will use a custom task ncbr/1hdd
+# /etc/puppetlabs/razor-server/tasks
+
+
+#razor create-repo --name ubuntu-16.04.0 --iso-url http://releases.ubuntu.com/16.04/ubuntu-16.04-server-amd64.iso \
+#                  --task ncbr/general
+
+#razor create-repo --name ubuntu-16.04.1 --iso-url http://releases.ubuntu.com/16.04.1/ubuntu-16.04.1-server-amd64.iso \
+#                  --task ncbr/general
+
+#razor create-repo --name ubuntu-16.04.2 --iso-url http://de.releases.ubuntu.com/16.04.2/ubuntu-16.04.2-server-amd64.iso \
+#                  --task ncbr/general
+
+razor create-repo --name ubuntu-16.04.3 --iso-url http://de.releases.ubuntu.com/16.04.3/ubuntu-16.04.3-server-amd64.iso \
+                  --task ncbr/general
+
+
+

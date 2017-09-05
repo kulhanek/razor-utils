@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# the broker installs the puppet agent on the node
+# we will use custom broker type puppet-pc1
+# /etc/puppetlabs/razor-server/brokers
+
+razor create-broker --name puppet-pc1 --broker-type puppet-pc1 \
+  --configuration server=puppet.ncbr.muni.cz
+

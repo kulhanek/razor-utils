@@ -1,0 +1,3 @@
+[submodule "02.nodes/phpipam-utils"]
+	path = 02.nodes/phpipam-utils
+	url = https://github.com/kulhanek/phpipam-utils.git

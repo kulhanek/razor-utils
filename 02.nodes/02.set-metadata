@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# for each node
+cat nodes | sed -e 's/[[:blank:]][[:blank:]]*#.*//' | while read NAME MAC TASK REST; do
+    if [[ (-z "$NAME") || (-z "$MAC" ) ]]; then continue; fi
+    # get razor node name by MAC address
+    NODE=`wget -nv -O - http://localhost:8150//api/collections/nodes?mac=$MAC 2> /dev/null | jq ".items[] | .name" | tr -d '"'`
+    if [ "$NODE" = "null" ]; then
+        echo "> Node [$NAME/$MAC] is not registered!"
+        continue;
+    fi
+    echo "> Node $NODE[$NAME/$MAC] ..."
+    # set node metadata
+    SN=`echo $NAME | tr '.' ' ' | awk '{ print $1; }'`
+    IP=`dig +short $NAME`
+    razor update-node-metadata --node $NODE --key hostname      --value "$SN"
+    razor update-node-metadata --node $NODE --key domain        --value ncbr.muni.cz
+done
+

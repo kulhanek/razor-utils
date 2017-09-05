@@ -1,0 +1,14 @@
+#!/bin/bash
+
+PASSWORD="48BYbsEStd"
+
+# tasks
+while read POLICY TASK REPO; do
+    echo ""
+    echo ">>> $POLICY [$REPO//$TASK] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    razor delete-policy --name "$POLICY"  &> /dev/null
+    razor create-policy --name "$POLICY" --repo $REPO --task $TASK --broker puppet-pc1 \
+                        --enabled --hostname "host${id}.ncbr.muni.cz" --root-password "$PASSWORD" --tag "$POLICY"
+done < tasks
+
+

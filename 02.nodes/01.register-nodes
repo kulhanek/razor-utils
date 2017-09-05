@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# for each node
+cat nodes | sed -e 's/[[:blank:]][[:blank:]]*#.*//' | while read NODE MAC TASK REST; do
+    if [[ (-z "$NODE") || (-z "$MAC" ) ]]; then continue; fi 
+    echo ""
+    echo ">> $NODE/$MAC"
+    SN=`echo $NODE | tr '.' ' ' | awk '{ print $1; }'`
+    razor register-node --hw-info net0=$MAC \
+        --hw-info serial=$NODE \
+        --hw-info asset="$SN" \
+        --installed true
+done
+
